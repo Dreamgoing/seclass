@@ -24,14 +24,20 @@
 // 使得sigma(ri^2) (i from 1 to m) 取得最大值时,所有圆的坐标和半径.
 // 具体实现看如下代码
 #include <iostream>
+#include <complex>
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <vector>
 #include <queue>
+#include <cmath>
+//#define SHOW_CONSTRUCT
 using namespace std;
 const double eps = 1e-6;
 const double a = 2;
+const int x[4] = {1,-1,1,-1};
+const int y[4] = {1,1,-1,-1};
+double ans = 0;
 struct Balloon{
     double r;
     pair<double,double> mu;
@@ -45,23 +51,59 @@ struct Balloon{
         mu = _mu;
     }
     //按照半径降序
-    bool operator<(const Balloon& b){
+    bool operator<(const Balloon& b) const{
         return this->r>b.r;
     }
 };
 Balloon getFirstSitiuation(double boundX,double boundY,Balloon a){ //第一种情况求解内切圆
     Balloon ans;
-
+    double r = (sqrt(2)-sqrt(2)*a.mu.first-a.r)/(1+sqrt(2));
+    double x,y;
+    x = y = 1-r;
+    ans.r = r;
+    ans.mu.first = x;
+    ans.mu.second = y;
     return ans;
 };
+void iterationMethod(double &r,double &y,Balloon a,Balloon b){
+    r = 0;
+    y = 0;
+    double tmpr = 0;
+    double tmpy = 0;
+    int num = 0;
+    while (num<100){
+        tmpy = y;
+        tmpr = r;
+        r = (y-b.mu.second)*(y-b.mu.second)/(b.r+1-b.mu.first)+b.mu.first+1-b.r;
+        y = sqrt((r+a.r)*(r+a.r)-(1-r-a.mu.first)*(1-r-a.mu.first))+a.mu.second;
+
+
+        r = 0.5*r;
+        cout<<y<< " "<<r<<endl;
+        if(fabs(r-tmpr)<=eps&&fabs(y-tmpy)<=eps){
+            break;
+        }
+        num++;
+
+    }
+}
 Balloon getSecondSitiuation(double bound,Balloon a,Balloon b){  //第二种情况求解内切圆
     Balloon ans;
-
+    double r,y;
+  //  iterationMethod(r,y,a,b);
+  //  ans.mu.first = 1-r;
+   // ans.mu.second = y;
+  //  ans.r = r;
+    ans.r = 0;
+    ans.mu.first = 0;
+    ans.mu.second = 0;
     return ans;
 }
 Balloon getThirdSitiuation(Balloon a,Balloon b,Balloon c){ //第三种情况求解内切圆
     Balloon ans;
-
+    ans.r = 0;
+    ans.mu.first = 0;
+    ans.mu.second = 0;
     return ans;
 }
 vector<Balloon> res;
@@ -76,24 +118,69 @@ void construct(int m){
         conv.push_back(tmpFirst);
         Balloon tmpSecond = getSecondSitiuation(1,tmpFirst,preFisrtSitiuation);
         conv.push_back(tmpSecond);
-        conv.push_back(Balloon(tmpSecond.r,tmpSecond.mu));
+        conv.push_back(Balloon(tmpSecond.r,make_pair(tmpSecond.mu.second,tmpSecond.mu.first)));
         Balloon tmpThird = getThirdSitiuation(tmpFirst,tmpSecond,preFisrtSitiuation);
         conv.push_back(tmpThird);
     }
+    sort(conv.begin(),conv.end());
+}
+double getSumrArea(vector<Balloon> vec){
+    double ans = 0;
+    for(int i = 0;i<vec.size();i++){
+        ans+=vec[i].r*vec[i].r;
+    }
+    return ans;
 }
 void solve(){
     res.clear();
     res.push_back(Balloon(1,make_pair(0.,0.))); //当m==1时,为正方形的内切圆
 
+}
+void showConstruct(){
+    for(int i = 0;i<conv.size();i++){
+        cout<<"r = "<<conv[i].r<<" pos ( "<<conv[i].mu.first<<" , "<<conv[i].mu.second<<" ) "<<endl;
+    }
+}
+void showAns(int m){
+    ans = 0;
+    if(m>=1){
+        cout<<"r = "<<conv[0].r<<" pos ( "<<conv[0].mu.first<<" , "<<conv[0].mu.second<<" ) "<<endl;
+        ans+=conv[0].r*conv[0].r;
+    }
+    int tmpm = m-1;
+    int tmpre = tmpm%4;
+    tmpm/=4;
+    for(int i = 1;i<=tmpm;i++){
+        cout<<"r = "<<conv[i].r<<" pos ( "<<conv[i].mu.first<<" , "<<conv[i].mu.second<<" ) "<<endl;
+        cout<<"r = "<<conv[i].r<<" pos ( "<<-conv[i].mu.first<<" , "<<conv[i].mu.second<<" ) "<<endl;
+        cout<<"r = "<<conv[i].r<<" pos ( "<<conv[i].mu.first<<" , "<<-conv[i].mu.second<<" ) "<<endl;
+        cout<<"r = "<<conv[i].r<<" pos ( "<<-conv[i].mu.first<<" , "<<-conv[i].mu.second<<" ) "<<endl;
+        ans+=4*conv[i].r*conv[i].r;
+    }
+    for(int i = 0;i<tmpre;i++){
+
+        ans+=conv[tmpm+1].r*conv[tmpm+1].r;
+        cout<<"r = "<<conv[tmpm+1].r<<" pos ( "<<x[i]*conv[tmpm+1].mu.first<<" , "<<y[i]*conv[tmpm+1].mu.second<<" ) "<<endl;
+    }
 
 }
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    //ios_base::sync_with_stdio(false);
+    //cin.tie(NULL);
     int m;
+    cout<<"input m "<<endl;
     while (cin>>m){
+        cout<<"m = "<<m<<endl;
+        construct(m);
 
+#ifdef SHOW_CONSTRUCT
+        showConstruct();
+#endif
 
+        showAns(m);
+        //cout<<"the max sum r^2 is "<<ans<<endl;
+        printf("the max sum r^2 is %.10lf\n", ans);
+        cout<<"\ninput m "<<endl;
 
 
     }
