@@ -49,17 +49,17 @@ struct Balloon{
         return this->r>b.r;
     }
 };
-Balloon getFirstSitiuation(double boundX,double boundY,Balloon a){
+Balloon getFirstSitiuation(double boundX,double boundY,Balloon a){ //第一种情况求解内切圆
     Balloon ans;
 
     return ans;
 };
-Balloon getSecondSitiuation(double bound,Balloon a,Balloon b){
+Balloon getSecondSitiuation(double bound,Balloon a,Balloon b){  //第二种情况求解内切圆
     Balloon ans;
 
     return ans;
 }
-Balloon getThirdSitiuation(Balloon a,Balloon b,Balloon c){
+Balloon getThirdSitiuation(Balloon a,Balloon b,Balloon c){ //第三种情况求解内切圆
     Balloon ans;
 
     return ans;
@@ -69,8 +69,16 @@ vector<Balloon> conv; // 构造序列
 void construct(int m){
     conv.clear();
     conv.push_back(Balloon(1,make_pair(0.,0.)));
+    Balloon preFisrtSitiuation = conv[0];
     for(int i = 0;i<=m;i++){
-
+        Balloon tmpFirst = getFirstSitiuation(1,1,preFisrtSitiuation);
+        preFisrtSitiuation = tmpFirst;
+        conv.push_back(tmpFirst);
+        Balloon tmpSecond = getSecondSitiuation(1,tmpFirst,preFisrtSitiuation);
+        conv.push_back(tmpSecond);
+        conv.push_back(Balloon(tmpSecond.r,tmpSecond.mu));
+        Balloon tmpThird = getThirdSitiuation(tmpFirst,tmpSecond,preFisrtSitiuation);
+        conv.push_back(tmpThird);
     }
 }
 void solve(){
