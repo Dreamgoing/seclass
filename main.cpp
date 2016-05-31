@@ -32,6 +32,7 @@
 #include <queue>
 #include <cmath>
 //#define SHOW_CONSTRUCT
+#define ITERATION
 using namespace std;
 const double eps = 1e-6;
 const double a = 2;
@@ -71,15 +72,15 @@ void iterationMethod(double &r,double &y,Balloon a,Balloon b){
     double tmpr = 0;
     double tmpy = 0;
     int num = 0;
-    while (num<100){
+    while (num<1000){
         tmpy = y;
         tmpr = r;
-        r = (y-b.mu.second)*(y-b.mu.second)/(b.r+1-b.mu.first)+b.mu.first+1-b.r;
-        y = sqrt((r+a.r)*(r+a.r)-(1-r-a.mu.first)*(1-r-a.mu.first))+a.mu.second;
+        //r = (y-b.mu.second)*(y-b.mu.second)/(b.r+1-b.mu.first)+b.mu.first+1-b.r;
 
-
+        y = sqrt((r+a.r)*(r+a.r)-(1.-r-a.mu.first)*(1.-r-a.mu.first))+a.mu.second;
+        r = ((b.mu.first-1.)*(b.mu.first-1)-b.r*b.r+(y-b.mu.second)*(y-b.mu.second))/(b.r-b.mu.first+1.);
         r = 0.5*r;
-        cout<<y<< " "<<r<<endl;
+        //cout<<y<< " "<<r<<endl;
         if(fabs(r-tmpr)<=eps&&fabs(y-tmpy)<=eps){
             break;
         }
@@ -90,13 +91,23 @@ void iterationMethod(double &r,double &y,Balloon a,Balloon b){
 Balloon getSecondSitiuation(double bound,Balloon a,Balloon b){  //第二种情况求解内切圆
     Balloon ans;
     double r,y;
-  //  iterationMethod(r,y,a,b);
-  //  ans.mu.first = 1-r;
-   // ans.mu.second = y;
-  //  ans.r = r;
+#ifdef ITERATION
+    iterationMethod(r,y,a,b);
+    ans.mu.first = 1.-r;
+    ans.mu.second = y;
+    ans.r = r;
+    if(isnan(ans.r)||isnan(ans.mu.first)||isnan(ans.mu.second)){
+        ans.r = 0;
+        ans.mu.first = 0;
+        ans.mu.second = 0;
+
+    }
+   // cout<<r<<" -->r"<<endl;
+#else
     ans.r = 0;
     ans.mu.first = 0;
     ans.mu.second = 0;
+#endif
     return ans;
 }
 Balloon getThirdSitiuation(Balloon a,Balloon b,Balloon c){ //第三种情况求解内切圆
