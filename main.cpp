@@ -119,6 +119,7 @@ Balloon getThirdSitiuation(Balloon a,Balloon b,Balloon c){ //第三种情况求�
 }
 vector<Balloon> res;
 vector<Balloon> conv; // 构造序列
+vector<pair<double,double> >limPoint;
 void construct(int m){
     conv.clear();
     conv.push_back(Balloon(1,make_pair(0.,0.)));
@@ -174,6 +175,13 @@ void showAns(int m){
         cout<<"r = "<<conv[tmpm+1].r<<" pos ( "<<x[i]*conv[tmpm+1].mu.first<<" , "<<y[i]*conv[tmpm+1].mu.second<<" ) "<<endl;
     }
 
+}
+void inputLimit(int n){
+    pair<double,double> lim;
+    for(int i = 0;i<n;i++){
+        cin>>lim.first>>lim.second;
+        limPoint.push_back(lim);
+    }
 }
 int main() {
     //ios_base::sync_with_stdio(false);
