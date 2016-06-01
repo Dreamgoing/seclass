@@ -33,6 +33,8 @@
 #include <cmath>
 //#define SHOW_CONSTRUCT
 #define ITERATION
+//#define NOLIMIT
+#define LIMIT
 using namespace std;
 const double eps = 1e-6;
 const double a = 2;
@@ -119,8 +121,10 @@ Balloon getThirdSitiuation(Balloon a,Balloon b,Balloon c){ //第三种情况求�
 }
 vector<Balloon> res;
 vector<Balloon> conv; // 构造序列
+vector<pair<double,double> >limPoint;
 void construct(int m){
-    conv.clear();
+   // conv.clear();
+#ifdef NOLIMIT
     conv.push_back(Balloon(1,make_pair(0.,0.)));
     Balloon preFisrtSitiuation = conv[0];
     for(int i = 0;i<=m;i++){
@@ -133,6 +137,18 @@ void construct(int m){
         Balloon tmpThird = getThirdSitiuation(tmpFirst,tmpSecond,preFisrtSitiuation);
         conv.push_back(tmpThird);
     }
+#endif
+
+#ifdef LIMIT
+    int times = 0;
+    for(int i = 0;i<conv.size()&&times<20;i++){
+        Balloon tmpfirst = getFirstSitiuation(1,1,conv[i]); //与四个边界进行构造
+        Balloon tmpsecond = getFirstSitiuation(-1,-1,conv[i]);
+        conv.push_back(tmpfirst);
+        times++;
+       // conv.push_back(tmpsecond);
+    }
+#endif
     sort(conv.begin(),conv.end());
 }
 double getSumrArea(vector<Balloon> vec){
@@ -175,13 +191,25 @@ void showAns(int m){
     }
 
 }
+void inputLimit(int n){
+    conv.clear();
+    pair<double,double> lim;
+    Balloon limBallon;
+    for(int i = 0;i<n;i++){
+        cin>>lim.first>>lim.second;
+        limPoint.push_back(lim);
+        limBallon = Balloon(eps,lim);
+        conv.push_back(limBallon);
+    }
+}
 int main() {
     //ios_base::sync_with_stdio(false);
     //cin.tie(NULL);
-    int m;
-    cout<<"input m "<<endl;
-    while (cin>>m){
+    int m,n;
+    cout<<"input m the number of balloon and n the limit points "<<endl;
+    while (cin>>m>>n){
         cout<<"m = "<<m<<endl;
+        inputLimit(n);
         construct(m);
 
 #ifdef SHOW_CONSTRUCT
@@ -191,7 +219,7 @@ int main() {
         showAns(m);
         //cout<<"the max sum r^2 is "<<ans<<endl;
         printf("the max sum r^2 is %.10lf\n", ans);
-        cout<<"\ninput m "<<endl;
+        cout<<"\ninput m the number of balloon and the n the limit points"<<endl;
 
 
     }

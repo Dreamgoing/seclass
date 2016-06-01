@@ -1,0 +1,27 @@
+input m the number of balloon and n the limit points 
+m = 1
+r = 0.292893 pos ( 0.707107 , 0.707107 ) 
+the max sum r^2 is 0.0857861950
+
+input m the number of balloon and the n the limit points
+m = 2
+r = 0.292893 pos ( 0.707107 , 0.707107 ) 
+r = 0.0502525 pos ( 0.949748 , 0.949748 ) 
+the max sum r^2 is 0.0883115048
+
+input m the number of balloon and the n the limit points
+m = 3
+r = 0.351471 pos ( 0.648529 , 0.648529 ) 
+r = 0.060303 pos ( 0.939697 , 0.939697 ) 
+r = 0.060303 pos ( -0.939697 , 0.939697 ) 
+the max sum r^2 is 0.1308050747
+
+input m the number of balloon and the n the limit points
+m = 4
+r = 0.468629 pos ( 0.531371 , 0.531371 ) 
+r = 0.41005 pos ( 0.58995 , 0.58995 ) 
+r = 0.41005 pos ( -0.58995 , 0.58995 ) 
+r = 0.41005 pos ( 0.58995 , -0.58995 ) 
+the max sum r^2 is 0.7240361263
+
+input m the number of balloon and the n the limit points
